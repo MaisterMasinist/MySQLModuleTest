@@ -46,7 +46,9 @@ Kritériumok az adatbázissal kapcsolatban:
 
 */
 
-
+CREATE TABLE `modulzaro`.`user_data` (`id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(100) NOT NULL , `email` VARCHAR(100) NOT NULL , `password` VARCHAR(100) NOT NULL , `active` BOOLEAN NOT NULL , `date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`, `email`), UNIQUE (`email`)) ENGINE = InnoDB;
+CREATE TABLE `modulzaro`.`messages` (`id` INT NOT NULL AUTO_INCREMENT , `from_name` VARCHAR(100) NOT NULL , `to_name` VARCHAR(100) NOT NULL , `message` TEXT NOT NULL , `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `reply` INT NULL , PRIMARY KEY (`id`), INDEX (`reply`)) ENGINE = InnoDB;
+CREATE TABLE `modulzaro`.`user_messages` (`messages_id` INT NOT NULL , `from_user_email` VARCHAR(100) NOT NULL , `to_user_email` VARCHAR(100) NOT NULL , PRIMARY KEY (`messages_id`, `from_user_email`, `to_user_email`), INDEX `user_data.email` (`from_user_email`, `to_user_email`), FOREIGN KEY (`messages_id`) REFERENCES `messages`(`id`), FOREIGN KEY (`from_user_email`) REFERENCES `user_data`(`email`), FOREIGN KEY (`to_user_email`) REFERENCES `user_data`(`email`)) ENGINE = InnoDB;
 -- ---------------------------------------------------------------------------------------------------------------------
 
 /*
@@ -56,3 +58,15 @@ Adj hozzá adatokat mindegyik táblához!
 (Az adatoknak nem kell valósnak lenniük. Egy felhasználói email-cím lehet például: 'valami@valami.va')
 
 */
+
+INSERT INTO `user_data` (`name`, `email`, `password`, `active`) VALUES ('joska', 'joska@joska.hu', 'joska1234', 1);
+INSERT INTO `user_data` (`name`, `email`, `password`, `active`) VALUES ('pista', 'pista@pista.hu', 'pista1234', 0);
+INSERT INTO `user_data` (`name`, `email`, `password`, `active`) VALUES ('feri', 'feri@feri.hu', 'feri1234', 1);
+
+INSERT INTO `messages`(`from_name`, `to_name`, `message`) VALUES ('joska','pista','hello');
+INSERT INTO `messages`(`from_name`, `to_name`, `message`, `reply`) VALUES ('pista','joska','szia', 1);
+INSERT INTO `messages`(`from_name`, `to_name`, `message`) VALUES ('feri','pista','szevasz');
+
+INSERT INTO `user_messages`(`messages_id`, `from_user_email`, `to_user_email`) VALUES (1,'joska@joska.hu','pista@pista.hu');
+INSERT INTO `user_messages`(`messages_id`, `from_user_email`, `to_user_email`) VALUES (2,'pista@pista.hu','joska@joska.hu');
+INSERT INTO `user_messages`(`messages_id`, `from_user_email`, `to_user_email`) VALUES (3,'feri@feri.hu','pista@pista.hu');

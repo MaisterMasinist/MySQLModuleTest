@@ -34,6 +34,7 @@ Jó munkát!
         -1523
 */
 
+SELECT MIN(IndepYear) FROM `country`;
 
 /*
 2. feladat (4 pont)
@@ -46,6 +47,7 @@ Jó munkát!
         CHN Code-ú ország (China)
 */
 
+SELECT * FROM country WHERE IndepYear = (SELECT MIN(IndepYear) FROM country);
 
 /*
 3. feladat (2 pont)
@@ -58,6 +60,7 @@ Jó munkát!
         ID szerint növekvő sorrendben az utolsó 3 darab: 4076, 4078, 4079
 */
 
+SELECT * FROM `city` WHERE city.Name = city.District;
 
 /*
 4. feladat (3 pont)
@@ -70,6 +73,7 @@ Jó munkát!
         országnevek: Bangladesh, Bahrain, Kuwait, Mauritania, Qatar, Sudan, Sierra Leone
 */
 
+SELECT country.Name, country.HeadOfState FROM `country` WHERE country.HeadOfState LIKE "%Ahmad%" OR country.HeadOfState LIKE "%Ahmed%" OR country.HeadOfState LIKE "%Hamad%";
 
 /*
 5. feladat (3 pont)
@@ -82,6 +86,7 @@ Jó munkát!
         kontinensek: Oceania (7 db), Europe (2), South America (1)
 */
 
+SELECT * FROM `country` WHERE country.LifeExpectancy IS NULL AND country.Population != 0;
 
 /*
 6. feladat (2 pont)
@@ -93,6 +98,7 @@ Jó munkát!
         63 rekord
 */
 
+SELECT country.Code, country.Name, country.GNP, country.GNPOld FROM `country` WHERE country.GNP < country.GNPOld;
 
 /*
 7. feladat (4 pont)
@@ -104,6 +110,7 @@ Jó munkát!
         29 rekord
 */
 
+SELECT countrylanguage.Language FROM `countrylanguage` WHERE countrylanguage.Language LIKE "%ian" GROUP BY countrylanguage.Language ORDER BY countrylanguage.Language;
 
 /*
 8. feladat (4 pont)
@@ -117,6 +124,7 @@ Jó munkát!
         Eastern Europe 10
 */
 
+SELECT country.Region, COUNT(*) AS countries_by_region FROM `country` WHERE country.Region Like "%Europe%" GROUP BY country.Region;
 
 /*
 9. feladat (5 pont)
@@ -131,6 +139,7 @@ Jó munkát!
         utolsó országkód: ZWE
 */
 
+SELECT country.Code, country.Name, city.Name FROM `country` LEFT JOIN city ON country.Capital = city.ID ORDER BY country.Name;
 
 /*
 10. feladat (3 pont)
@@ -142,6 +151,7 @@ Jó munkát!
         a városok ID-ja: 61, 62, 1791, 2316, 2317, 2728, 2805, 2806, 3333, 3538
 */
 
+SELECT * FROM `city` WHERE city.Population < 1000 AND city.Population > 99;
 
 /*
 11. feladat (5 pont)
@@ -155,6 +165,7 @@ Jó munkát!
         országkódok, amelyek szerepelnek a listában: DNK, FIN, FRO, ISL, NOR, SJM, SWE
 */
 
+SELECT city.* FROM `country` LEFT JOIN city ON country.Code = city.CountryCode WHERE country.Region = "Nordic Countries" ORDER BY city.CountryCode, city.Population DESC;
 
 /*
 12. feladat (5 pont)
@@ -170,6 +181,7 @@ Jó munkát!
         legnagyobb: Caribbean (11)
 */
 
+SELECT country.Region, COUNT(*) AS `count` FROM `country` WHERE country.IndepYear IS NULL OR country.IndepYear < 1500 GROUP BY country.Region ORDER BY `count` DESC;
 
 /*
 13. feladat (6 pont)
@@ -181,6 +193,7 @@ Jó munkát!
         országkódok: ABW, ANT, BHR, BRN, COK, DNK, ISL, JPN, KWT, MAC, MCO, MDV, MYS, NOR, PRI, TTO
 */
 
+SELECT country.* FROM `countrylanguage` INNER JOIN country ON country.Code = countrylanguage.CountryCode WHERE countrylanguage.IsOfficial = "F" AND countrylanguage.Language = "English";
 
 /*
 14. feladat (6 pont)
@@ -192,6 +205,7 @@ Jó munkát!
         országkódok: ATA, ATF, BVT, HMD, IOT, SGS, UMI
 */
 
+SELECT * FROM `country` LEFT JOIN city ON city.CountryCode = country.Code WHERE city.ID IS NULL;
 
 /*
 15. feladat (6 pont)
@@ -203,6 +217,7 @@ Jó munkát!
         65 rekord
 */
 
+SELECT country.Name, country.Continent, country.Region, countrylanguage.Language, countrylanguage.Percentage FROM `country` LEFT JOIN countrylanguage ON countrylanguage.CountryCode = country.Code WHERE countrylanguage.Percentage = 0;
 
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -220,6 +235,7 @@ bónusz 1. (4 pont)
         88 rekord
 */
 
+SELECT country.`Code`, `Code2`, country.`Name` FROM `country` WHERE `Code2` <> LEFT(`Code`, 2);
 
 /*
 bónusz 2. (4 pont)
@@ -233,6 +249,7 @@ bónusz 2. (4 pont)
         363 rekord
 */
 
+SELECT city.* FROM `city` INNER JOIN `country` ON country.`Code` = city.`CountryCode` AND country.`IndepYear` IN (SELECT MIN(`country`.`IndepYear`) FROM `country`);
 
 /*
 bónusz 3. (4 pont)
@@ -249,6 +266,7 @@ bónusz 3. (4 pont)
             AIA 0.0
 */
 
+SELECT countrylanguage.CountryCode, MAX(countrylanguage.Percentage) AS "MaxPercentage" FROM countrylanguage GROUP BY `countrylanguage`.CountryCode;
 
 /*
 bónusz 4. (6 pont)
@@ -266,6 +284,7 @@ bónusz 4. (6 pont)
             AIA, English, 0.0
 */
 
+SELECT countrylanguage.`CountryCode`, countrylanguage.`Language`, countrylanguage.`Percentage` FROM `countrylanguage` INNER JOIN ( SELECT countrylanguage.`CountryCode`, MAX(countrylanguage.`Percentage`) AS "Percentage" FROM `countrylanguage` GROUP BY countrylanguage.`CountryCode` ) AS `MaxPercentage` ON countrylanguage.`CountryCode` = `MaxPercentage`.`CountryCode` AND countrylanguage.`Percentage` = `MaxPercentage`.`Percentage`;
 
 /*
 bónusz 5. (6 pont)
